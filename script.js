@@ -3,11 +3,13 @@ const c = canvas.getContext('2d')
 
 // document elements
 const modal = document.getElementById('modal')
+const buttonCreateFourStrings = document.getElementById('buttonCreateFourStrings')
 const buttonCreateSixStrings = document.getElementById('buttonCreateSixStrings')
 const buttonCreateEightStrings = document.getElementById('buttonCreateEightStrings')
 
 // Constants
 const notes = ['a','a#','b','c','c#','d','d#','e','f','f#','g','g#']
+const intervals_global = ['root','third','fourth','fifth','seventh']
 let whatIntervalIsPositionedWhenClicking = 'root'
 
 //#region PARAMETRES
@@ -35,12 +37,19 @@ const noteColour = 'rgba(120,120,120,0.8)'
 const metalbarColour = 'rgba(150,150,150,0.8)'
 const markColour = 'rgba(12,12,12,0.4)'
 const ghostColour = 'rgba(12,12,12,0.1)'
-const invtervalColours = {
+const intervalColours = {
     root: 'rgba(250,0,0,0.5)',
     third: 'rgba(250,125,0,0.3)', 
     fourth: 'rgba(250,250,0,0.3)',
     fifth: 'rgba(250,0,125,0.3)',
     seventh: 'rgba(250,0,250,0.3)'
+}
+const intervalColoursSolidEquivalent = {
+    root: 'rgb(253, 128, 128)',
+    third: 'rgb(254,216,179)', 
+    fourth: 'rgb(254,254,179)', 
+    fifth: 'rgb(254,179,216)', 
+    seventh: 'rgb(254,179,254)'
 }
 const focusWindowColour = 'rgba(50,150,175,0.7)'
 //#endregion
@@ -49,8 +58,9 @@ const focusWindowColour = 'rgba(50,150,175,0.7)'
 
 
 //#region BUTTONS AND LISTENERS
-const buttonNotes = document.getElementById('buttonNotes')
-const buttonIntervals = document.getElementById('buttonIntervals')
+const buttonWriteNotes = document.getElementById('button_write_notes')
+const buttonWriteIntervals = document.getElementById('button_write_intervals')
+const buttonColourIntervals = document.getElementById('button_colour_intervals')
 const buttonFocusWindow = document.getElementById('buttonFocusWindow')
 
 canvas.addEventListener('mousemove', (e)=>{
@@ -89,35 +99,56 @@ canvas.addEventListener('click', (e) => {
     guitar.refreshScreen()
 })  
 
-//// show notes
-buttonNotes.addEventListener('click', ()=> {
+//// write notes
+buttonWriteNotes.addEventListener('click', ()=> {
     guitar.show.notes = !guitar.show.notes
-    if (guitar.show.notes) {buttonNotes.classList.add('button_on')}
-    else {buttonNotes.classList.remove('button_on')}
+    if (guitar.show.notes) {buttonWriteNotes.classList.add('button_on')}
+    else {buttonWriteNotes.classList.remove('button_on')}
+
+    // can't have notes and interval symbols at the same time
+    if (guitar.show.notes && guitar.show.intervalSymbols){
+        buttonWriteIntervals.click()
+    }
+
     guitar.refreshScreen()
 })
 
-/// Intervals
-buttonIntervals.addEventListener('click', ()=>{
-    guitar.show.intervals = !guitar.show.intervals
-    if (guitar.show.intervals){
-        buttonIntervals.classList.add('button_on')
+//// write interval symbols
+buttonWriteIntervals .addEventListener('click', ()=> {
+    guitar.show.intervalSymbols = !guitar.show.intervalSymbols
+    if (guitar.show.intervalSymbols) {buttonWriteIntervals.classList.add('button_on')}
+    else {buttonWriteIntervals.classList.remove('button_on')}
+
+    // can't have notes and interval symbols at the same time
+    if (guitar.show.notes && guitar.show.intervalSymbols){
+        buttonWriteNotes.click()
+    }
+
+    guitar.refreshScreen()
+})
+
+
+/// Colour Intervals
+buttonColourIntervals.addEventListener('click', ()=>{
+    guitar.show.intervalColours = !guitar.show.intervalColours
+    if (guitar.show.intervalColours){
+        buttonColourIntervals.classList.add('button_on')
     } else {
-        buttonIntervals.classList.remove('button_on')
+        buttonColourIntervals.classList.remove('button_on')
     }
 
     // Individual interval buttons
-    if (guitar.show.intervals) {
-        turn_visibility('on',['root','third','fourth','fifth','seventh'])
+    if (guitar.show.intervalColours) {
+        turn_visibility('on', intervals_global)
     } else {
-        turn_visibility('off',['root','third','fourth','fifth','seventh'])
+        turn_visibility('off', intervals_global)
     }
     guitar.refreshScreen()
 })
 
 function turn_visibility(direction, ints){
     for (const int of ints){
-        const buttonName = "button_" + int + "s"
+        const buttonName = "button_colour_" + int
         const button = document.getElementById(buttonName)
         if (direction === 'on' && (!button.style.backgroundColor) ||
             direction === 'off' && (button.style.backgroundColor)
@@ -128,13 +159,13 @@ function turn_visibility(direction, ints){
 
 // create interval buttons (to determine their visibility)
 function listener_interval(int){
-    const buttonName = "button_" + int + "s"
+    const buttonName = "button_colour_" + int
     const button = document.getElementById(buttonName)
     button.addEventListener('click', ()=>{
         guitar.scale[int].toggleVisibility()
         
         if (guitar.scale[int].isVisible) {
-            button.style.backgroundColor = invtervalColours[int]
+            button.style.backgroundColor = intervalColoursSolidEquivalent[int]
         } else {
             button.style.removeProperty('background-color')
         }
@@ -163,25 +194,39 @@ buttonFocusWindow.addEventListener('click', () => {
 
 // Select what to position on click
 const select = document.getElementById('selectWhatToPosition')
+select.style.backgroundColor = intervalColoursSolidEquivalent.root
 select.addEventListener('change', ()=>{
     whatIntervalIsPositionedWhenClicking = select.options[select.selectedIndex].textContent
+    document.getElementById('selectWhatToPosition').style.backgroundColor = intervalColoursSolidEquivalent[whatIntervalIsPositionedWhenClicking]
+
 })
 
 
 /// create guitar button
+buttonCreateFourStrings.addEventListener('click',()=>{
+    setupGuitar(4)
+    removeModal()
+})
 buttonCreateSixStrings.addEventListener('click',()=>{
-    setupGuitar(false)
+    setupGuitar(6)
     removeModal()
 })
 
 buttonCreateEightStrings.addEventListener('click',()=>{
-    setupGuitar(true)
+    setupGuitar(8)
     removeModal()
 })
 
 function removeModal(){
     modal.remove()
 }
+
+
+// colour the dropdwon menu of options
+for (const interval of intervals_global){
+    document.getElementById(`option_${interval}`).style.backgroundColor = intervalColoursSolidEquivalent[interval]
+}
+
 
 //#endregion
 
@@ -200,7 +245,8 @@ class Guitar{
         this.distanceBetweenStrings = 40
         this.show ={
             notes: true,
-            intervals: true,
+            intervalSymbols: false,
+            intervalColours: true,
             roots: true,
             focusWindow: false,
         }
@@ -290,8 +336,14 @@ class Guitar{
             string.drawNotes()
         }
     }
+
+    drawIntervalSymbols(){
+        for (const string of this.strings){
+            string.drawIntervalSymbol()
+        }
+    }
    
-    drawIntervals(){
+    drawIntervalColours(){
         for (const fret of this.frets){
             if (fret.interval && fret.interval.isVisible){
                 fret.drawInterval()
@@ -369,9 +421,12 @@ class Guitar{
         this.drawStrings() 
         if (this.show.notes){
             this.drawNotes()
-        } 
+        } else if (this.show.intervalSymbols){
+            this.drawIntervalSymbols()
+        }
+
         this.drawMarks()
-        this.drawIntervals()
+        this.drawIntervalColours()
 
         // ghost
         for (const fret of this.frets){
@@ -424,6 +479,17 @@ class String{
             c.font = noteFont
             c.fillText(fret.note, fret.start.x + metalbarDistance/2 - noteTextDistance.x, this.start.y  - noteTextDistance.y);
             c.fillStyle = 'black'        }
+    }
+
+    drawIntervalSymbol(){
+        for (const fret of this.frets){
+            if (fret.interval){
+                c.fillStyle = noteColour
+                c.font = noteFont
+                c.fillText(fret.interval.symbol, fret.start.x + metalbarDistance/2 - noteTextDistance.x, this.start.y  - noteTextDistance.y);
+                c.fillStyle = 'black'       
+            }
+        }
     }
 
     createFrets(){
@@ -523,28 +589,29 @@ class Fret{
 
 class Scale{
     constructor(){
-        this.root = new PentatoncInterval({steps:0, name:'root'})
-        this.third = new PentatoncInterval({steps:3, name:'third'})
-        this.fourth = new PentatoncInterval({steps:5, name:'fourth'})
-        this.fifth = new PentatoncInterval({steps:7, name:'fifth'})
-        this.seventh = new PentatoncInterval({steps:10, name:'seventh'})
+        this.root = new PentatoncInterval({steps:0, name:'root', symbol: 'I'})
+        this.third = new PentatoncInterval({steps:3, name:'third', symbol: 'III'})
+        this.fourth = new PentatoncInterval({steps:5, name:'fourth', symbol: 'IV'})
+        this.fifth = new PentatoncInterval({steps:7, name:'fifth', symbol: 'V'})
+        this.seventh = new PentatoncInterval({steps:10, name:'seventh', symbol: 'VII'})
     }
 }
 
 
 class PentatoncInterval{
-    constructor({name, steps, colour}){
+    constructor({name, steps, colour, symbol}){
         guitar.scaleNotes.push(this)
         this.name = name
+        this.symbol = symbol
         this.steps = steps
         this.note = undefined
-        this.colour = invtervalColours[this.name]
+        this.colour = intervalColours[this.name]
         this.isVisible = true
         this.initialColour()
     }
 
     initialColour(){
-        const buttonName = "button_" + this.name + "s"
+        const buttonName = "button_colour_" + this.name
         const button = document.getElementById(buttonName)
         button.style.backgroundColor = this.colour
     }
@@ -562,8 +629,8 @@ class PentatoncInterval{
 //#region INITIATE
 // create strings
 const guitar = new Guitar()
-function setupGuitar(extraStrings){
-    if (extraStrings){
+function setupGuitar(stringNumber){
+    if (stringNumber === 8){
         const string_fsharp = new String({pitch: 'f#'})
         const string_blow = new String({pitch: 'b'})
     }
@@ -571,8 +638,11 @@ function setupGuitar(extraStrings){
     const string_a = new String({pitch: 'a', thickness: 3})
     const string_d = new String({pitch: 'd', thickness: 3})
     const string_g = new String({pitch: 'g', thickness: 2})
-    const string_b = new String({pitch: 'b', thickness: 2})
-    const string_ehigh = new String({pitch: 'e', thickness: 1})
+    
+    if (stringNumber === 6){
+        const string_b = new String({pitch: 'b', thickness: 2})
+        const string_ehigh = new String({pitch: 'e', thickness: 1})
+    }
 
     guitar.updateDistanceBetweenStrings()
     guitar.createMetalbars()

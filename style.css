@@ -13,8 +13,8 @@ body{
     background-color: bisque;
 }
 
-.instructio{
-    font-size: smaller;
+.instruction{
+    font-size: 0.75rem;
 }
 button{
     margin-top: 7px;
@@ -29,19 +29,12 @@ button{
 }
 
 select {
-    margin-top: 14px;
+    /* margin-top: 14px; */
     padding: 5px;
-    background-color: aquamarine;
     border-radius: 20px;
 }
 
-option{
-    background-color:aquamarine;
-}
 
-#modalHolder{
-    position: relative;
-}
 
 #modal{
     display: flex;

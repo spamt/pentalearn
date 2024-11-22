@@ -5,22 +5,21 @@
   </head>
   <body>
     <div id="modal">
+      <button id="buttonCreateFourStrings" class="create">Create a normal 4 string bass</button>
       <button id="buttonCreateSixStrings" class="create">Create a normal 6 string guitar</button>
       <button id="buttonCreateEightStrings" class="create">Create a 6 string guitar + 2 extra low strings (5 frets distance)</button>
     </div>
-    <!-- <div id="modalHolder">
-    </div> -->
     <canvas id="myCanvas" width="800px" height="350px"></canvas>
     <br />
     <br />
     <div class="label">
-      Clicking on a fret positions the 
+      Clicking on a fret positions the
       <select id="selectWhatToPosition">
-        <option>root</option>
-        <option>third</option>
-        <option>fourth</option>
-        <option>fifth</option>
-        <option>seventh</option>
+        <option id="option_root">root</option>
+        <option id="option_third">third</option>
+        <option id="option_fourth">fourth</option>
+        <option id="option_fifth">fifth</option>
+        <option id="option_seventh">seventh</option>
       </select>
     </div>
 
@@ -29,14 +28,15 @@
     <div class="label">Show / hide</div>
     <button id="buttonFocusWindow">Focus window</button> <span class="instruction"> Then click on a fret to put it at the centre</span>
     <br />
-    <button id="buttonNotes" class="button_on">Notes</button>
+    Write: <button id="button_write_notes" class="button_on">Notes</button>
+    <button id="button_write_intervals">Intervals</button>
     <br />
-    <button id="buttonIntervals" class="button_on">All Intervals</button>
-    <button id="button_roots">Roots</button>
-    <button id="button_thirds">Thirds</button>
-    <button id="button_fourths">Fourths</button>
-    <button id="button_fifths">Fifths</button>
-    <button id="button_sevenths">Sevenths</button>
+    Colour: <button id="button_colour_intervals" class="button_on">All Intervals</button>
+    <button id="button_colour_root">Roots</button>
+    <button id="button_colour_third">Thirds</button>
+    <button id="button_colour_fourth">Fourths</button>
+    <button id="button_colour_fifth">Fifths</button>
+    <button id="button_colour_seventh">Sevenths</button>
 
     <br />
 

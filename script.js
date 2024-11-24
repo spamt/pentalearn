@@ -589,11 +589,11 @@ class Fret{
 
 class Scale{
     constructor(){
-        this.root = new PentatoncInterval({steps:0, name:'root', symbol: 'I'})
-        this.third = new PentatoncInterval({steps:3, name:'third', symbol: 'III'})
-        this.fourth = new PentatoncInterval({steps:5, name:'fourth', symbol: 'IV'})
-        this.fifth = new PentatoncInterval({steps:7, name:'fifth', symbol: 'V'})
-        this.seventh = new PentatoncInterval({steps:10, name:'seventh', symbol: 'VII'})
+        this.root = new PentatoncInterval({steps:0, name:'root', symbol: 'P1'})
+        this.third = new PentatoncInterval({steps:3, name:'third', symbol: 'm3'})
+        this.fourth = new PentatoncInterval({steps:5, name:'fourth', symbol: 'P4'})
+        this.fifth = new PentatoncInterval({steps:7, name:'fifth', symbol: 'P5'})
+        this.seventh = new PentatoncInterval({steps:10, name:'seventh', symbol: 'm7'})
     }
 }
 
